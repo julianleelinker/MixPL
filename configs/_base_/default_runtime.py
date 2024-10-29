@@ -1,4 +1,4 @@
-default_scope = 'mmdet'
+default_scope = 'mmyolo'
 
 default_hooks = dict(
     timer=dict(type='IterTimerHook'),
@@ -6,7 +6,7 @@ default_hooks = dict(
     param_scheduler=dict(type='ParamSchedulerHook'),
     checkpoint=dict(type='CheckpointHook', interval=1),
     sampler_seed=dict(type='DistSamplerSeedHook'),
-    visualization=dict(type='DetVisualizationHook'))
+    visualization=dict(type='mmdet.DetVisualizationHook'))
 
 env_cfg = dict(
     cudnn_benchmark=False,
@@ -16,9 +16,28 @@ env_cfg = dict(
 
 vis_backends = [dict(type='LocalVisBackend')]
 visualizer = dict(
-    type='DetLocalVisualizer', vis_backends=vis_backends, name='visualizer')
+    type='mmdet.DetLocalVisualizer',
+    vis_backends=vis_backends,
+    name='visualizer')
 log_processor = dict(type='LogProcessor', window_size=50, by_epoch=True)
 
 log_level = 'INFO'
 load_from = None
 resume = False
+
+# Example to use different file client
+# Method 1: simply set the data root and let the file I/O module
+# automatically infer from prefix (not support LMDB and Memcache yet)
+
+# data_root = 's3://openmmlab/datasets/detection/coco/'
+
+# Method 2: Use `backend_args`, `file_client_args` in versions
+# before MMDet 3.0.0rc6
+# backend_args = dict(
+#     backend='petrel',
+#     path_mapping=dict({
+#         './data/': 's3://openmmlab/datasets/detection/',
+#         'data/': 's3://openmmlab/datasets/detection/'
+#     }))
+
+backend_args = None
