@@ -1,6 +1,6 @@
 _base_ = [
     'mmdet::_base_/models/retinanet_r50_fpn.py', 'mmdet::_base_/default_runtime.py',
-    'mixpl_coco_detection.py'
+    'mixpl_mobility_detection.py'
 ]
 
 custom_imports = dict(
