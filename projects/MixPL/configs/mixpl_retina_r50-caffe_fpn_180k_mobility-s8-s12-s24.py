@@ -8,7 +8,7 @@ custom_imports = dict(
 
 detector = _base_.model
 detector.data_preprocessor = dict(
-    type='DetDataPreprocessor',
+    type='mmdet.DetDataPreprocessor',
     mean=[103.530, 116.280, 123.675],
     std=[1.0, 1.0, 1.0],
     bgr_to_rgb=False,
@@ -29,10 +29,10 @@ detector.backbone = dict(
 
 model = dict(
     _delete_=True,
-    type='MixPL',
+    type='mmdet.MixPL',
     detector=detector,
     data_preprocessor=dict(
-        type='MultiBranchDataPreprocessor',
+        type='mmdet.MultiBranchDataPreprocessor',
         data_preprocessor=detector['data_preprocessor']),
     semi_train_cfg=dict(
         compile=True,
@@ -70,18 +70,18 @@ train_dataloader = dict(
 # training schedule for 180k
 train_cfg = dict(
     type='IterBasedTrainLoop', max_iters=180000, val_interval=5000)
-val_cfg = dict(type='TeacherStudentValLoop')
-test_cfg = dict(type='TestLoop')
+val_cfg = dict(type='mmdet.TeacherStudentValLoop')
+test_cfg = dict(type='mmdet.TestLoop')
 
 # learning rate policy
 param_scheduler = [
     dict(
-        type='LinearLR', start_factor=0.001, by_epoch=False, begin=0, end=500),
+        type='mmdet.LinearLR', start_factor=0.001, by_epoch=False, begin=0, end=500),
 ]
 
 # optimizer
 optim_wrapper = dict(
-    type='OptimWrapper',
+    type='mmdet.OptimWrapper',
     optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001),
     clip_grad=dict(max_norm=20, norm_type=2)
 )
@@ -89,6 +89,6 @@ optim_wrapper = dict(
 default_hooks = dict(
     checkpoint=dict(by_epoch=False, interval=10000, max_keep_ckpts=1))
 log_processor = dict(by_epoch=False)
-custom_hooks = [dict(type='MeanTeacherHook', momentum=0.0002, gamma=4)]
+custom_hooks = [dict(type='mmdet.MeanTeacherHook', momentum=0.0002, gamma=4)]
 # custom_hooks = [dict(type='MeanTeacherHook', momentum=0.0002)]
 resume=True

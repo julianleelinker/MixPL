@@ -28,23 +28,23 @@ num_classes = len(class_name) # dataset category number
 metainfo = dict(classes=class_name, palette=[(20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60), (20, 220, 60)])
 
 color_space = [
-    [dict(type='ColorTransform')],
-    [dict(type='AutoContrast')],
-    [dict(type='Equalize')],
-    [dict(type='Sharpness')],
-    [dict(type='Posterize')],
-    [dict(type='Solarize')],
-    [dict(type='Color')],
-    [dict(type='Contrast')],
-    [dict(type='Brightness')],
+    [dict(type='mmdet.ColorTransform')],
+    [dict(type='mmdet.AutoContrast')],
+    [dict(type='mmdet.Equalize')],
+    [dict(type='mmdet.Sharpness')],
+    [dict(type='mmdet.Posterize')],
+    [dict(type='mmdet.Solarize')],
+    [dict(type='mmdet.Color')],
+    [dict(type='mmdet.Contrast')],
+    [dict(type='mmdet.Brightness')],
 ]
 
 geometric = [
-    [dict(type='Rotate')],
-    [dict(type='ShearX')],
-    [dict(type='ShearY')],
-    [dict(type='TranslateX')],
-    [dict(type='TranslateY')],
+    [dict(type='mmdet.Rotate')],
+    [dict(type='mmdet.ShearX')],
+    [dict(type='mmdet.ShearY')],
+    [dict(type='mmdet.TranslateX')],
+    [dict(type='mmdet.TranslateY')],
 ]
 
 scale = [(1333, 400), (1333, 1200)]
@@ -53,25 +53,25 @@ branch_field = ['sup', 'unsup_teacher', 'unsup_student']
 # pipeline used to augment labeled data,
 # which will be sent to student model for supervised training.
 sup_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='RandomResize', scale=scale, keep_ratio=True),
-    dict(type='RandomFlip', prob=0.5),
-    dict(type='RandAugment', aug_space=color_space, aug_num=1),
-    dict(type='FilterAnnotations', min_gt_bbox_wh=(1e-2, 1e-2)),
+    dict(type='mmdet.LoadImageFromFile'),
+    dict(type='mmdet.LoadAnnotations', with_bbox=True),
+    dict(type='mmdet.RandomResize', scale=scale, keep_ratio=True),
+    dict(type='mmdet.RandomFlip', prob=0.5),
+    dict(type='mmdet.RandAugment', aug_space=color_space, aug_num=1),
+    dict(type='mmdet.FilterAnnotations', min_gt_bbox_wh=(1e-2, 1e-2)),
     dict(
-        type='MultiBranch',
+        type='mmdet.MultiBranch',
         branch_field=branch_field,
-        sup=dict(type='PackDetInputs'))
+        sup=dict(type='mmdet.PackDetInputs'))
 ]
 
 # pipeline used to augment unlabeled data weakly,
 # which will be sent to teacher model for predicting pseudo instances.
 weak_pipeline = [
-    dict(type='RandomResize', scale=scale, keep_ratio=True),
-    dict(type='RandomFlip', prob=0.5),
+    dict(type='mmdet.RandomResize', scale=scale, keep_ratio=True),
+    dict(type='mmdet.RandomFlip', prob=0.5),
     dict(
-        type='PackDetInputs',
+        type='mmdet.PackDetInputs',
         meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
                    'scale_factor', 'flip', 'flip_direction',
                    'homography_matrix')),
@@ -80,18 +80,18 @@ weak_pipeline = [
 # pipeline used to augment unlabeled data strongly,
 # which will be sent to student model for unsupervised training.
 strong_pipeline = [
-    dict(type='RandomResize', scale=scale, keep_ratio=True),
-    dict(type='RandomFlip', prob=0.5),
+    dict(type='mmdet.RandomResize', scale=scale, keep_ratio=True),
+    dict(type='mmdet.RandomFlip', prob=0.5),
     dict(
-        type='RandomOrder',
+        type='mmdet.RandomOrder',
         transforms=[
-            dict(type='RandAugment', aug_space=color_space, aug_num=1),
-            dict(type='RandAugment', aug_space=geometric, aug_num=1),
+            dict(type='mmdet.RandAugment', aug_space=color_space, aug_num=1),
+            dict(type='mmdet.RandAugment', aug_space=geometric, aug_num=1),
         ]),
     # dict(type='RandomErasing', n_patches=(1, 5), ratio=(0, 0.2)),
-    dict(type='FilterAnnotations', min_gt_bbox_wh=(1e-2, 1e-2)),
+    dict(type='mmdet.FilterAnnotations', min_gt_bbox_wh=(1e-2, 1e-2)),
     dict(
-        type='PackDetInputs',
+        type='mmdet.PackDetInputs',
         meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
                    'scale_factor', 'flip', 'flip_direction',
                    'homography_matrix')),
@@ -99,11 +99,11 @@ strong_pipeline = [
 
 # pipeline used to augment unlabeled data into different views
 unsup_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='mmdet.LoadImageFromFile'),
     # dict(type='LoadEmptyAnnotations'),
-    dict(type='LoadAnnotations', with_bbox=True),
+    dict(type='mmdet.LoadAnnotations', with_bbox=True),
     dict(
-        type='MultiBranch',
+        type='mmdet.MultiBranch',
         branch_field=branch_field,
         unsup_teacher=weak_pipeline,
         unsup_student=strong_pipeline,
@@ -111,10 +111,10 @@ unsup_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(type='Resize', scale=(1333, 800), keep_ratio=True),
+    dict(type='mmdet.LoadImageFromFile'),
+    dict(type='mmdet.Resize', scale=(1333, 800), keep_ratio=True),
     dict(
-        type='PackDetInputs',
+        type='mmdet.PackDetInputs',
         meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
                    'scale_factor'))
 ]
@@ -163,11 +163,11 @@ train_dataloader = dict(
     num_workers=num_workers,
     persistent_workers=True,
     sampler=dict(
-        type='GroupMultiSourceSampler',
+        type='mmdet.GroupMultiSourceSampler',
         batch_size=batch_size,
         source_ratio=[4, 4]),
     dataset=dict(
-        type='ConcatDataset', datasets=[labeled_dataset, unlabeled_dataset],
+        type='mmdet.ConcatDataset', datasets=[labeled_dataset, unlabeled_dataset],
     )
 )
 
@@ -176,7 +176,7 @@ val_dataloader = dict(
     num_workers=2,
     persistent_workers=True,
     drop_last=False,
-    sampler=dict(type='DefaultSampler', shuffle=False),
+    sampler=dict(type='mmdet.DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
@@ -193,7 +193,7 @@ val_dataloader = dict(
 test_dataloader = val_dataloader
 
 val_evaluator = dict(
-    type='CocoMetric',
+    type='mmdet.CocoMetric',
     # ann_file=data_root + 'annotations/instances_val2017.json',
     ann_file=data_root + 'val/labels.json',
     metric='bbox',
