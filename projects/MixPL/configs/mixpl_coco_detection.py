@@ -1,6 +1,7 @@
 # dataset settings
 dataset_type = 'CocoDataset'
-data_root = 'data/coco/'
+# data_root = 'data/coco/'
+data_root = '/mnt/data-home/julian/coco-10p/'
 
 color_space = [
     [dict(type='ColorTransform')],

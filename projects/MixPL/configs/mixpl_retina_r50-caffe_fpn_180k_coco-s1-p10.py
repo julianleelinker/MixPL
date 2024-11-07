@@ -1,5 +1,5 @@
 _base_ = [
-    'mmdet::_base_/models/retinanet_r50_fpn.py', 'mmdet::_base_/default_runtime.py',
+    'mmdet::_base_/models/retinanet_r50_fpn.py', 'mmdet::_base_/default_runtime_mmdet.py',
     'mixpl_coco_detection.py'
 ]
 
@@ -68,7 +68,7 @@ train_dataloader = dict(
 
 # training schedule for 180k
 train_cfg = dict(
-    type='IterBasedTrainLoop', max_iters=180000, val_interval=5000)
+    type='IterBasedTrainLoop', max_iters=180000, val_interval=1000)
 val_cfg = dict(type='TeacherStudentValLoop')
 test_cfg = dict(type='TestLoop')
 
